@@ -89,9 +89,6 @@ class Notes:
         self.grpr.to_csv("annotations.csv", sep=',', index=False, encoding="utf-8")
         print("Saving annotations")
 
-Notes().evaluation()
-Notes.ending()
-
 
 
 
