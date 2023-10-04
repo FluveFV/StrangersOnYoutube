@@ -17,13 +17,16 @@ class Notes:
     def __init__(self):
         self.grpr = self.__progress__()
         self.dataframe = self.__dataloader__()
-        self.startingpoint
+        self.startingpoint = 0
+        self.l = []
+        self.evaluation()
+        self.ending()
 
     #0
     def __dataloader__(self):
         try:
             dataframe = pd.read_csv(file_name)
-            dataframe.rename(columns={'Unnamed: 0': 'Comments', '0': 'User ID'}, inplace=True)
+            dataframe.rename(columns={'Unnamed: 0': 'User ID', '0': 'Comments'}, inplace=True)
             print("Comments were loaded. First comment:")
             print(dataframe.head(1))
             return dataframe
@@ -55,7 +58,7 @@ class Notes:
             self.grpr = []
         return self.grpr
     #2
-    def ground_truthing(text):
+    def ground_truthing(self, text):
         pp = pprint.PrettyPrinter(width=64, depth=1)
         pp.pprint(text)
         inp = str(input("Evaluation:\t\t"))
@@ -63,34 +66,31 @@ class Notes:
             print("Please insert a valid evaluation between 0, 1, 2, or \n press 'exit' to quit.")
             if str(input("")) == "exit":
                 return float('NaN')
-            inp = int(text.ground_truthing(text))
+            inp = int(ground_truthing(text))
         return inp
 
-    def evaluation(self, self.startingpoint):
-        a = len(self.dataframe['Original comments'])
-        if startingpoint != 0:
-            for comment in self.dataframe['Original comments'][startingpoint:]:
+    def evaluation(self):
+
+        a = len(self.dataframe['Comments'])
+        l = list(self.grpr['Semantic evaluation'])
+        for comment in self.dataframe['Comments'][self.startingpoint:]:
                 res = self.ground_truthing(comment)
-                self.grpr.append(res)
+                l.append(res)
                 if type(res) == float:
-                    b = len(self.grpr)
+                    b = len(self.grpr['Semantic evaluation'])
                     c = a - b
-                    self.grpr.extend([res] * c)
-                    print(f'Session finished at length {b}')
-                    break
-        else:
-            for comment in self.dataframe['Original comments']:
-                res = self.ground_truthing(comment)
-                self.grpr.append(res)
-                if type(res) == float:
-                    b = len(self.grpr)
-                    c = a - b
-                    self.grpr.extend([res] * c)
-                    print(f'Session finished at length {b}')
+                    l.extend([res] * c)
+                    print(f'Session finished at length {c}')
+                    self.l = l
                     break
 
-Notes()
-Notes.evaluation()
+    def ending(self):
+        self.grpr[self.startingpoint:len(self.l)-len(self.grpr['Semantic evaluation'])] = self.l
+        self.grpr.to_csv("annotations.csv", sep=',', index=False, encoding="utf-8")
+        print("Saving annotations")
+
+Notes().evaluation()
+Notes.ending()
 
 
 
