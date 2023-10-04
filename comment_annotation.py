@@ -15,17 +15,18 @@ class Notes:
     4- saves the progress made.
     """
     def __init__(self):
-        self.__dataloader__()
         self.grpr = self.__progress__()
-        self.ground_truthing = self.ground_truthing
+        self.dataframe = self.__dataloader__()
+        self.startingpoint
 
     #0
     def __dataloader__(self):
         try:
-            self.dataframe = pd.read_csv(file_name)
-            self.dataframe.rename(columns={'Unnamed: 0': 'Comments', '0': 'User ID'}, inplace=True)
-            print("Data was loaded. First comment:")
-            print(self.dataframe.head(1))
+            dataframe = pd.read_csv(file_name)
+            dataframe.rename(columns={'Unnamed: 0': 'Comments', '0': 'User ID'}, inplace=True)
+            print("Comments were loaded. First comment:")
+            print(dataframe.head(1))
+            return dataframe
         except FileNotFoundError:
             print(f'File "{file_name}" not found!')
 
@@ -42,6 +43,13 @@ class Notes:
         if anncheck:
             self.grpr = self.annotations
             print(self.grpr.head(1))
+            c = 0 # progress counter
+            for element in self.grpr['Semantic evaluation']:
+                if element not in [0, 1, 2] and c != 0:
+                    print(f"There are still {len(self.grpr-c)} elements to annotate")
+                    break
+                c += 1
+            self.startingpoint = c
         else:
             print("Previous progress not found.")
             self.grpr = []
@@ -58,27 +66,26 @@ class Notes:
             inp = int(text.ground_truthing(text))
         return inp
 
-    def evaluation(self, dataframe, startingpoint=0):
-
-        a = len(dataframe['Original comments'])
+    def evaluation(self, self.startingpoint):
+        a = len(self.dataframe['Original comments'])
         if startingpoint != 0:
-            for comment in dataframe['Original comments'][startingpoint:]:
+            for comment in self.dataframe['Original comments'][startingpoint:]:
                 res = self.ground_truthing(comment)
                 self.grpr.append(res)
                 if type(res) == float:
                     b = len(self.grpr)
                     c = a - b
-                    grpr.extend([res] * c)
+                    self.grpr.extend([res] * c)
                     print(f'Session finished at length {b}')
                     break
         else:
-            for comment in dataframe['Original comments']:
-                res = ground_truthing(comment)
-                grpr.append(res)
+            for comment in self.dataframe['Original comments']:
+                res = self.ground_truthing(comment)
+                self.grpr.append(res)
                 if type(res) == float:
-                    b = len(grpr)
+                    b = len(self.grpr)
                     c = a - b
-                    grpr.extend([res] * c)
+                    self.grpr.extend([res] * c)
                     print(f'Session finished at length {b}')
                     break
 
