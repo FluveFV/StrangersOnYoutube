@@ -3,8 +3,9 @@ import pandas as pd
 import pprint
 import numpy as np
 file_name = "sample_for_groundtruth.csv"
+annotations = "annotations.csv"
 
-class annotation:
+class Notes:
 
     # at least four attributes:
     # 0 loads the dataframe with comments from the same folder this class is located in
@@ -16,11 +17,21 @@ class annotation:
     def __init__(self):
         self.dataloader = pd.read_csv(file_name)
         self.dataloader.rename(columns={'Unnamed: 0': 'Original indexes', '0': 'User ID'}, inplace=True)
+        try:
+            self.annotations = pd.read_csv(annotations)
+        except FileNotFoundError:
+            self.annotations = False
+
         print("Data was loaded")
         print(self.dataloader.head(5))
 
     def progress(self):
-        2
+        if self.annotations:
+            print("Previous progress found.")
+            self.grpr = self.annotations
+        else:
+            print("Previous progress not found.")
+            self.grpr = []
 
     def ground_truthing(text):
         pp = pprint.PrettyPrinter(width=64, depth=1)
@@ -36,7 +47,7 @@ class annotation:
     ground_truthing("test " * 6 * 14)
 
 
-annotation()
+Notes()
 
 
 
