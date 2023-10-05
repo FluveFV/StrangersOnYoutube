@@ -1,7 +1,5 @@
-import json
 import pandas as pd
 import pprint
-import numpy as np
 file_name = "sample_for_groundtruth.csv"
 annotations = "annotations.csv"
 
@@ -21,6 +19,7 @@ class Notes:
         self.l = []
         self.evaluation()
         self.ending()
+        self.ci = 0
 
     #0
     def __dataloader__(self):
@@ -59,23 +58,25 @@ class Notes:
         return self.grpr
     #2
     def ground_truthing(self, text):
+        print()
         pp = pprint.PrettyPrinter(width=64, depth=1)
         pp.pprint(text)
         inp = str(input("Evaluation:\t\t"))
         if inp not in ["0", "1", "2"]:
-            print("Please insert a valid evaluation between 0, 1, 2, or \n press 'exit' to quit.")
-            if str(input("")) == "exit":
-                return float('NaN')
-            inp = int(ground_truthing(text))
+            if inp == "exit":
+                return float("NaN")
+            print("press 'exit' to quit")
+            inp = int(self.ground_truthing(text))
+        print()
         return inp
 
     def evaluation(self):
 
         a = len(self.dataframe['Comments'])
         l = list(self.grpr['Semantic evaluation'])
-        for comment in self.dataframe['Comments'][self.startingpoint:]:
-                res = self.ground_truthing(comment)
-                l.append(res)
+        # ci = comment index
+        for ci in range(len(self.dataframe['Comments'][self.startingpoint:])):
+                res = self.ground_truthing(self.dataframe['Comments'][ci])
                 if type(res) == float:
                     b = len(self.grpr['Semantic evaluation'])
                     c = a - b
@@ -83,9 +84,15 @@ class Notes:
                     print(f'Session finished at length {c}')
                     self.l = l
                     break
+                l[ci] = res
+                self.ci = ci
 
     def ending(self):
-        self.grpr[self.startingpoint:len(self.l)-len(self.grpr['Semantic evaluation'])] = self.l
+        print(len(self.l))
+        print(len(self.grpr['Semantic evaluation']))
+        self.grpr['Semantic evaluation'] = self.l
+
+        print(self.grpr.head())
         self.grpr.to_csv("annotations.csv", sep=',', index=False, encoding="utf-8")
         print("Saving annotations")
 
