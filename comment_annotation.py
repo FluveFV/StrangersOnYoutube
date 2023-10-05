@@ -38,7 +38,8 @@ class Notes:
     def __progress__(self):
         try:
             self.l = pd.read_csv(annotations)
-            self.startingpoint = self.l['Last comment checked'] + 1
+            self.startingpoint = self.l['Last comment checked'][0] + 1
+            self.length = len(self.l['User ID'])
             # so that the starting point is one position after the last one evaluated.
 
         except FileNotFoundError:
@@ -74,7 +75,8 @@ class Notes:
     def evaluation(self):
         print("\n\t\tPRESS 'exit' TO QUIT")
         # ci means comment index
-        for ci in range(self.length):
+        for ci in range(self.startingpoint, self.length):
+            print("asking you")
             res = self.ground_truthing(self.dataframe['Comments'][ci])
             if type(res) == float:
                 self.ci = ci
