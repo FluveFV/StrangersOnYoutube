@@ -13,13 +13,15 @@ class Notes:
     4- saves the progress made.
     """
     def __init__(self):
+
         self.dataframe = self.__dataloader__()
-        self.grpr = self.__progress__()
-        self.startingpoint = 0
-        self.l = self.grpr
-        self.evaluation()
-        self.ending()
+        self.startingpoint, self.l = 0, []
+        self.__progress__()
+        print(f"Starting analysis from comment {self.startingpoint + 1}")
+
         self.ci = 0
+        self.evaluation()
+        self.__closing__()
 
     #0
     def __dataloader__(self):
@@ -35,64 +37,70 @@ class Notes:
     #1
     def __progress__(self):
         try:
-            result = pd.read_csv(annotations)
-            print("Previous progress found. First progress made:")
-            print(result.head(1))
+            self.l = pd.read_csv(annotations)
             c = 0  # progress counter
-            for element in result['Semantic evaluation']:
+            for element in self.l['Semantic evaluation']:
                 if element not in [0, 1, 2] and c != 0:
-                    print(f"There are still {len(result - c)} elements to annotate")
-                    break
-                elif element in [0, 1, 2]:
+                    print(f"There are still {len(self.l - c)} elements to annotate")
+                    self.startingpoint = c
+                    return
+                elif element in (0, 1, 2):
                     c += 1
-            self.startingpoint = c
-            if c == 0 :
-                print("Previous progress not found.")
+
         except FileNotFoundError:
-            print(f"File {annotations} not found,")
-            result = [float('NaN')]*len(self.dataframe['Comments'])
-        return result
+            print(f"File {annotations} not found...\nCreating an empty dataframe to fill with annotations...")
+            result = pd.DataFrame()
+            result['Semantic evaluation'] = [] * self.dataframe.shape[0]
+            result['User ID'] = self.dataframe['User ID']
+            #result.rename(columns={0:'Semantic evaluation'}, inplace=True)
+            print("Length of the annotation dataframe:", len(result))
+            self.l = result
+            print(self.l.head())
+            print("Done.")
+
     #2
     def ground_truthing(self, text):
-        print()
         pp = pprint.PrettyPrinter(width=64, depth=1)
         pp.pprint(text)
-        inp = str(input("Evaluation:\t\t"))
-        if inp not in ["0", "1", "2"]:
-            if inp == "exit":
+        inp = str(input("\n\t\tSCORE -->"))
+        if inp not in ('0', '1', '2'):
+            if inp.strip() == 'exit':
                 return float("NaN")
-            print("press 'exit' to quit")
-            inp = int(self.ground_truthing(text))
+            if inp != 'exit':
+                print("Please insert a valid input: exit, or 0, 1, 2.")
+                inp = str(input("\n\t\tSCORE --> ")).strip()
+                if inp.strip() == 'exit':
+                    return float("NaN")
+
         print()
         return inp
 
     def evaluation(self):
-
-        a = len(self.dataframe['Comments'])
+        print("\n\t\tPRESS 'exit' TO QUIT")
         l = self.l
+        # when going from human using a keyboard to an intuitive
+        # the semantic evaluation goes from 0, 1, 2 to -1 0 +1
+
         # ci means comment index
-        print(len(l))
         for ci in range(len(self.dataframe['Comments'][self.startingpoint:])):
-                print(ci)
-                res = self.ground_truthing(self.dataframe['Comments'][ci])
-                if type(res) == float:
-                    b = len(self.grpr['Semantic evaluation'])
-                    c = a - b
-                    l.extend([res] * c)
-                    print(f'Session finished at length {c}')
-                    self.l = l
-                    break
-                l[ci] = res
+            res = self.ground_truthing(self.dataframe['Comments'][ci])
+            if type(res) == float:
                 self.ci = ci
+                return
+            l.loc[ci,'Semantic evaluation'] = res
+        self.l = l
 
-    def ending(self):
-        print(len(self.l))
-        print(len(self.grpr['Semantic evaluation']))
-        self.grpr['Semantic evaluation'] = self.l
+    def __closing__(self):
 
-        print(self.grpr.head())
-        self.grpr.to_csv("annotations.csv", sep=',', index=False, encoding="utf-8")
-        print("Saving annotations")
+        print(f"Progress made: {(self.ci+1/len(self.l))*100 if len(self.l) != 0 else 0}%")
+        print("Saving annotations...")
+        self.l.to_csv("annotations.csv", sep=',', index=False, encoding="utf-8")
+        print(self.l.head())
+        print("Saved.")
+
+
+
+
 
 Notes()
 
