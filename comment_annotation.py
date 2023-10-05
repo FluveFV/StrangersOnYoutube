@@ -15,7 +15,7 @@ class Notes:
     def __init__(self):
 
         self.dataframe = self.__dataloader__()
-        self.startingpoint, self.l = 0, []
+        self.startingpoint, self.l, self.length = 0, [], 0
         self.__progress__()
         print(f"Starting analysis from comment {self.startingpoint + 1}")
 
@@ -74,7 +74,7 @@ class Notes:
     def evaluation(self):
         print("\n\t\tPRESS 'exit' TO QUIT")
         # ci means comment index
-        for ci in range():
+        for ci in range(self.length):
             res = self.ground_truthing(self.dataframe['Comments'][ci])
             if type(res) == float:
                 self.ci = ci
@@ -90,7 +90,7 @@ class Notes:
         print(f"Progress made: {self.ci/len(self.l)}%")
         print("Saving annotations...")
         self.l.to_csv("annotations.csv", sep=',', index=False, encoding="utf-8")
-        print(self.l.head())
+        print(self.l.head(25))
         print("Saved.")
 
 
