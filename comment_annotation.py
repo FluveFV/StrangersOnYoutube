@@ -13,10 +13,10 @@ class Notes:
     4- saves the progress made.
     """
     def __init__(self):
-        self.grpr = self.__progress__()
         self.dataframe = self.__dataloader__()
+        self.grpr = self.__progress__()
         self.startingpoint = 0
-        self.l = []
+        self.l = self.grpr
         self.evaluation()
         self.ending()
         self.ci = 0
@@ -35,27 +35,23 @@ class Notes:
     #1
     def __progress__(self):
         try:
-            self.annotations = pd.read_csv(annotations)
-            anncheck = True
+            result = pd.read_csv(annotations)
             print("Previous progress found. First progress made:")
-        except FileNotFoundError:
-            anncheck = False
-            print(f"File {annotations} not found!")
-
-        if anncheck:
-            self.grpr = self.annotations
-            print(self.grpr.head(1))
-            c = 0 # progress counter
-            for element in self.grpr['Semantic evaluation']:
+            print(result.head(1))
+            c = 0  # progress counter
+            for element in result['Semantic evaluation']:
                 if element not in [0, 1, 2] and c != 0:
-                    print(f"There are still {len(self.grpr-c)} elements to annotate")
+                    print(f"There are still {len(result - c)} elements to annotate")
                     break
-                c += 1
+                elif element in [0, 1, 2]:
+                    c += 1
             self.startingpoint = c
-        else:
-            print("Previous progress not found.")
-            self.grpr = []
-        return self.grpr
+            if c == 0 :
+                print("Previous progress not found.")
+        except FileNotFoundError:
+            print(f"File {annotations} not found,")
+            result = [float('NaN')]*len(self.dataframe['Comments'])
+        return result
     #2
     def ground_truthing(self, text):
         print()
@@ -73,9 +69,11 @@ class Notes:
     def evaluation(self):
 
         a = len(self.dataframe['Comments'])
-        l = list(self.grpr['Semantic evaluation'])
-        # ci = comment index
+        l = self.l
+        # ci means comment index
+        print(len(l))
         for ci in range(len(self.dataframe['Comments'][self.startingpoint:])):
+                print(ci)
                 res = self.ground_truthing(self.dataframe['Comments'][ci])
                 if type(res) == float:
                     b = len(self.grpr['Semantic evaluation'])
@@ -96,6 +94,6 @@ class Notes:
         self.grpr.to_csv("annotations.csv", sep=',', index=False, encoding="utf-8")
         print("Saving annotations")
 
-
+Notes()
 
 
