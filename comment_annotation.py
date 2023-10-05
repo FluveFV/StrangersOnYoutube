@@ -38,22 +38,18 @@ class Notes:
     def __progress__(self):
         try:
             self.l = pd.read_csv(annotations)
-            c = 0  # progress counter
-            for element in self.l['Semantic evaluation']:
-                if element not in [0, 1, 2] and c != 0:
-                    print(f"There are still {len(self.l - c)} elements to annotate")
-                    self.startingpoint = c
-                    return
-                elif element in (0, 1, 2):
-                    c += 1
+            self.startingpoint = self.l['Last comment checked'] + 1
+            # so that the starting point is one position after the last one evaluated.
 
         except FileNotFoundError:
             print(f"File {annotations} not found...\nCreating an empty dataframe to fill with annotations...")
             result = pd.DataFrame()
             result['Semantic evaluation'] = [] * self.dataframe.shape[0]
             result['User ID'] = self.dataframe['User ID']
+            result['Last comment checked'] = 0
             #result.rename(columns={0:'Semantic evaluation'}, inplace=True)
             print("Length of the annotation dataframe:", len(result))
+            self.length = len(result)
             self.l = result
             print(self.l.head())
             print("Done.")
@@ -77,22 +73,21 @@ class Notes:
 
     def evaluation(self):
         print("\n\t\tPRESS 'exit' TO QUIT")
-        l = self.l
-        # when going from human using a keyboard to an intuitive
-        # the semantic evaluation goes from 0, 1, 2 to -1 0 +1
-
         # ci means comment index
-        for ci in range(len(self.dataframe['Comments'][self.startingpoint:])):
+        for ci in range():
             res = self.ground_truthing(self.dataframe['Comments'][ci])
             if type(res) == float:
                 self.ci = ci
                 return
-            l.loc[ci,'Semantic evaluation'] = res
-        self.l = l
+            self.l.loc[ci,'Semantic evaluation'] = int(res)-1
+            self.l.loc[ci+1:, 'Semantic evaluation'] = float('NaN')
+            # when going from human using a keyboard to an intuitive
+            # the semantic evaluation goes from 0, 1, 2 to -1 0 +1
+            self.l.loc[0, 'Last comment checked'] = ci # this is the last comment checked
 
     def __closing__(self):
 
-        print(f"Progress made: {(self.ci+1/len(self.l))*100 if len(self.l) != 0 else 0}%")
+        print(f"Progress made: {self.ci/len(self.l)}%")
         print("Saving annotations...")
         self.l.to_csv("annotations.csv", sep=',', index=False, encoding="utf-8")
         print(self.l.head())
