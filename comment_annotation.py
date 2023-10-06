@@ -60,11 +60,11 @@ class Notes:
         pp = pprint.PrettyPrinter(width=64, depth=1)
         pp.pprint(text)
         inp = str(input("\n\t\tSCORE -->"))
-        if inp not in ('0', '1', '2'):
+        if inp not in ('1', '2', '3'):
             if inp.strip() == 'exit':
                 return float("NaN")
             if inp != 'exit':
-                print("Please insert a valid input: exit, or 0, 1, 2.")
+                print("Please insert a valid input: exit, or 1, 2, 3.")
                 inp = str(input("\n\t\tSCORE --> ")).strip()
                 if inp.strip() == 'exit':
                     return float("NaN")
@@ -81,7 +81,7 @@ class Notes:
             if type(res) == float:
                 self.ci = ci
                 return
-            self.l.loc[ci,'Semantic evaluation'] = int(res)-1
+            self.l.loc[ci,'Semantic evaluation'] = int(res)-2
             self.l.loc[ci+1:, 'Semantic evaluation'] = float('NaN')
             # when going from human using a keyboard to an intuitive
             # the semantic evaluation goes from 0, 1, 2 to -1 0 +1
