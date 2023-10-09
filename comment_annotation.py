@@ -76,7 +76,7 @@ class Notes:
         print("\n\t\tPRESS 'exit' TO QUIT")
         # ci means comment index
         for ci in range(self.startingpoint, self.length):
-            print("asking you")
+            print(f"{ci + 1} / {self.length}")
             res = self.ground_truthing(self.dataframe['Comments'][ci])
             if type(res) == float:
                 self.ci = ci
