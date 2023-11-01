@@ -1,7 +1,7 @@
 # StrangersOnYoutube
-Today, on the Internet, slang and online lingo persist and spread as a form of typical communication. To have quantitative analysis on, say, YouTube comments means to possess precious information on the behaviour of thousands of people, interacting with specific content. This can give insight over how humans are interacting on this platform, and if their behaviour is deviant and needs rehabilitation, or alternatively a byproduct of the platform's rules. 
+Today, on the Internet, slang and online lingo persist and spread as a form of typical communication. To have quantitative analysis on i.e. YouTube comments, it means to possess precious information on the behaviour of thousands of people, interacting with specific content. This can give insight over how humans are interacting on this platform, and if their behaviour is deviant and needs rehabilitation, or alternatively a byproduct of the platform's rules. 
 
-Using the python module for slang NLP, Vader is the pretrained model. In this specific project, I have personally reviewed 1000 YouTube comments and evaluated if they meant positive, neutral or negative content, in order to evaluate how Vader would perform on one video's comment section. 
+For slang NLP, VADER is a light-weight pretrained model used in this repository. In this specific project, I have personally reviewed 1000 YouTube comments and evaluated if they meant positive, neutral or negative content, in order to evaluate how VADER would perform on one video's comment section. 
 
 Usage: 
 
