@@ -1,5 +1,5 @@
 # Understanding intense online sentiment: The Youtube Apology and related intense online discourse using NLP
-This repo was my first attempt at NLP, using Google's API and VADER sentiment analysis tool. You can find the report [here]()
+This repo was my first attempt at NLP, using Google's API and VADER sentiment analysis tool. You can find the report [here](https://github.com/FluveFV/StrangersOnYoutube/blob/main/CSS_DavideVandelli.pdf)
 
 Today, on the Internet, slang and online lingo persist and spread as a form of typical communication. To have quantitative analysis on i.e. YouTube comments, it means to possess precious information on the behaviour of thousands of people, interacting with specific content. This can give insight over how humans are interacting on this platform, and if their behaviour is deviant and needs rehabilitation, or alternatively is a byproduct of the platform's rules. 
 
